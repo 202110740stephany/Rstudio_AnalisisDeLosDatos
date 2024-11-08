@@ -12,3 +12,7 @@ Hola, soy tephy
 Hola, soy Dani
 
 HHHHHH
+
+```{r}
+print("Hola")
+```
