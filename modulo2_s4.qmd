@@ -5,14 +5,64 @@ format: html
 editor: visual
 ---
 
-## Modulo 2
-
-Hola, soy tephy
-
-Hola, soy Dani
-
-HHHHHH
+## iii. Pronósticos
 
 ```{r}
-print("Hola")
+# Base de datos nativa en R
+
+AirPassengers <- read.csv("AirPassengers.csv")
+AirPassengers
+# Totales mensuales de pasajeros de aerolíneas internacionales, 1949 a 1960.
+```
+
+```{r}
+# Base de datos nativa en R
+
+nottem <- read.csv("nottem.csv")
+nottem
+
+# Las temperaturas medias del aire en el castillo de Nottingham en grados Fahrenheit durante 20 años.
+```
+
+```{r}
+plot(nottem, type = "o", main = "AirPassengers", ylab = "Número de Pasajeros")
+```
+
+```{r}
+# Descomposición, la estacionalidad cambia proporcionalmente al nivel
+decomp_ap <- decompose(log(AirPassengers), type = "multiplicative")
+plot(decomp_ap)
+```
+
+```{r}
+# Descomposición, la estacionalidad es fija
+decomp_nottem <- decompose(nottem, type = "additive")
+plot(decomp_nottem)
+```
+
+```{r}
+library(forecast)
+library(ggplot2)
+
+# HOLT WINTER
+holtwA <- hw(AirPassengers, seasonal="multiplicative", h=36)
+
+autoplot(AirPassengers) +
+  autolayer(holtwA$mean, series = "Pronóstico (Holt Winters)") +
+  labs(title = "Pronóstico de Holt Winters vs Serie Original de AirPassengers",
+       x = "Año", y = "Número de Pasajeros") +
+  theme_minimal() +
+  scale_color_manual(values = c("Serie Original" = "blue", "Pronóstico (Holt Winters)" = "red"))
+```
+
+```{r}
+# HOLT WINTER
+holtno <- hw(nottem, seasonal="additive", h=36)
+
+autoplot(nottem) +
+  autolayer(holtno$mean, series = "Pronóstico (Holt Winters)") +
+  labs(title = "Pronóstico de Holt Winters vs Serie Original de AirPassengers",
+       x = "Año", y = "Número de Pasajeros") +
+  theme_minimal() +
+  scale_color_manual(values = c("Serie Original" = "blue", "Pronóstico (Holt Winters)" = "red"))
 ```
